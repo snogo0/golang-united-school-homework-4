@@ -2,6 +2,10 @@ package string_sum
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
+	"strings"
+	"unicode"
 )
 
 //use these errors as appropriate, wrapping them with fmt.Errorf function
@@ -16,12 +20,48 @@ var (
 // For example, having an input string "3+5", it should return output string "8" and nil error
 // Consider cases, when operands are negative ("-3+5" or "-3-5") and when input string contains whitespace (" 3 + 5 ")
 //
-//For the cases, when the input expression is not valid(contains characters, that are not numbers, +, - or whitespace)
+// For the cases, when the input expression is not valid(contains characters, that are not numbers, +, - or whitespace)
 // the function should return an empty string and an appropriate error from strconv package wrapped into your own error
 // with fmt.Errorf function
 //
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
 func StringSum(input string) (output string, err error) {
-	return "", nil
+	if input == "" {
+		return "", fmt.Errorf("Nothing to parse: %w", errorEmptyInput)
+	}
+	fmt.Println("  -=-=-=-=-=-=-  DBG input: \"" + input + "\"")
+	runes := make([]rune, 0)
+	for _, r := range input {
+		switch {
+		case unicode.IsSpace(r):
+			// skip appending
+		case strings.ContainsAny(string(r), "+-"):
+			if len(runes) > 0 {
+				runes = append(runes, rune(" "[0]))
+			}
+			runes = append(runes, r)
+		default:
+			runes = append(runes, r)
+		}
+	}
+	fmt.Println("  -=-=-=-=-=-=-  DBG runes:", runes)
+	fmt.Print("  -=-=-=-=-=-=-  DBG Split:")
+	operands := strings.Split(string(runes), " ")
+	for i, s := range operands {
+		fmt.Print(" ", i, ": \"", s, "\"")
+	}
+	fmt.Println("")
+	if len(operands) != 2 {
+		return "", fmt.Errorf("Wrong number of operands: %w", errorNotTwoOperands)
+	}
+	sum := 0
+	for _, op := range operands {
+		val, err := strconv.Atoi(string(op))
+		if err != nil {
+			return "", fmt.Errorf("Conversation error: %w", err)
+		}
+		sum += val
+	}
+	return strconv.Itoa(sum), nil
 }
