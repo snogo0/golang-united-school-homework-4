@@ -30,7 +30,6 @@ func StringSum(input string) (output string, err error) {
 	if input == "" {
 		return "", fmt.Errorf("Nothing to parse: %w", errorEmptyInput)
 	}
-	fmt.Println("  -=-=-=-=-=-=-  DBG input: \"" + input + "\"")
 	runes := make([]rune, 0)
 	for _, r := range input {
 		switch {
@@ -45,13 +44,7 @@ func StringSum(input string) (output string, err error) {
 			runes = append(runes, r)
 		}
 	}
-	fmt.Println("  -=-=-=-=-=-=-  DBG runes:", runes)
-	fmt.Print("  -=-=-=-=-=-=-  DBG Split:")
 	operands := strings.Split(string(runes), " ")
-	for i, s := range operands {
-		fmt.Print(" ", i, ": \"", s, "\"")
-	}
-	fmt.Println("")
 	if len(operands) != 2 {
 		return "", fmt.Errorf("Wrong number of operands: %w", errorNotTwoOperands)
 	}
